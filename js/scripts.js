@@ -11,33 +11,74 @@ const changeTurn = () => {
     return turn === "X" ? "O" : "X";
 };
 
-// Computer Move (Random)
+// Computer Move (Moderately Easy - Makes Mistakes)
 function computerMove() {
     if (gameover) return;
 
     let boxtext = document.querySelectorAll(".boxtext");
-    let emptyBoxes = [];
 
-    boxtext.forEach((b, index) => {
-        if (b.innerText === "") emptyBoxes.push(index);
-    });
+    let wins = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ];
 
-    if (emptyBoxes.length === 0) return;
+    // Chance to play smart (70%)
+    let smartPlay = Math.random() < 0.7;
 
-    let randomIndex = emptyBoxes[Math.floor(Math.random() * emptyBoxes.length)];
-    boxtext[randomIndex].innerText = "O";
-    boxtext[randomIndex].classList.add("o-color");
-    boxtext[randomIndex].classList.remove("x-color");
+    if (smartPlay) {
+        // 1. Try to WIN
+        for (let w of wins) {
+            let [a, b, c] = w;
+            if (boxtext[a].innerText === "O" && boxtext[b].innerText === "O" && boxtext[c].innerText === "") { setMove(c); return; }
+            if (boxtext[a].innerText === "O" && boxtext[c].innerText === "O" && boxtext[b].innerText === "") { setMove(b); return; }
+            if (boxtext[b].innerText === "O" && boxtext[c].innerText === "O" && boxtext[a].innerText === "") { setMove(a); return; }
+        }
 
-    let compSound = audioTurn.cloneNode();
-    compSound.play();
+        // 2. Try to BLOCK player
+        for (let w of wins) {
+            let [a, b, c] = w;
+            if (boxtext[a].innerText === "X" && boxtext[b].innerText === "X" && boxtext[c].innerText === "") { setMove(c); return; }
+            if (boxtext[a].innerText === "X" && boxtext[c].innerText === "X" && boxtext[b].innerText === "") { setMove(b); return; }
+            if (boxtext[b].innerText === "X" && boxtext[c].innerText === "X" && boxtext[a].innerText === "") { setMove(a); return; }
+        }
+    }
 
-    checkwin();
-    if (!gameover) {
-        turn = "X";
-        document.querySelector('.info').innerText = turn + "'s Turn";
+    // 3. Take center if available
+    if (boxtext[4].innerText === "") { setMove(4); return; }
+
+    // 4. Take random corner
+    let corners = [0, 2, 6, 8];
+    let freeCorners = corners.filter(i => boxtext[i].innerText === "");
+    if (freeCorners.length > 0) {
+        let move = freeCorners[Math.floor(Math.random() * freeCorners.length)];
+        setMove(move);
+        return;
+    }
+
+    // 5. Fallback: pick any empty box
+    let empty = [];
+    boxtext.forEach((b, i) => { if (b.innerText === "") empty.push(i); });
+    if (empty.length > 0) {
+        setMove(empty[Math.floor(Math.random() * empty.length)]);
+    }
+
+    function setMove(i) {
+        boxtext[i].innerText = "O";
+        boxtext[i].classList.add("o-color");
+        boxtext[i].classList.remove("x-color");
+
+        let compSound = audioTurn.cloneNode();
+        compSound.play();
+
+        checkwin();
+        if (!gameover) {
+            turn = "X";
+            document.querySelector('.info').innerText = turn + "'s Turn";
+        }
     }
 }
+
 
 // Win Check
 const checkwin = () => {
