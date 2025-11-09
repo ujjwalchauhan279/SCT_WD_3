@@ -13,16 +13,16 @@ const changeTurn = () => {
 const checkwin = () => {
     let boxtext = document.getElementsByClassName("boxtext");
     let wins = [
-        [0, 1, 2, 5, 5, 0],
-        [3, 4, 5, 5, 15, 0],
-        [6, 7, 8, 5, 25, 0],
-        [0, 3, 6, -5, 15, 90],
-        [1, 4, 7, 5, 15, 90],
-        [2, 5, 8, 15, 15, 90],
-        [0, 4, 8, 5, 15, 45],
-        [2, 4, 6, 5, 15, 135],
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
     ];
-    
+
     wins.forEach(e => {
         if (
             boxtext[e[0]].innerText !== "" &&
@@ -31,10 +31,12 @@ const checkwin = () => {
         ) {
             document.querySelector('.info').innerText = boxtext[e[0]].innerText + " Won";
             gameover = true;
-            document.querySelector(".imgbox img").style.width = "200px";
             audiogameover.play();
-            document.querySelector(".line").style.transform = `translate(${e[3]}vw, ${e[4]}vw) rotate(${e[5]}deg)`;
-            document.querySelector(".line").style.width = "20vw";
+
+            // highlight winning boxes
+            e.forEach(i => {
+                document.getElementsByClassName("box")[i].classList.add("winner");
+            });
         }
     });
 }
@@ -44,9 +46,19 @@ let boxes = document.getElementsByClassName("box");
 Array.from(boxes).forEach(element => {
     let boxtext = element.querySelector('.boxtext');
     element.addEventListener('click', () => {
+        if (gameover) return;
         if (boxtext.innerText === '') {
             boxtext.innerText = turn;
+            // Color based on player
+            if (turn === "X") {
+                boxtext.classList.add("x-color");
+                boxtext.classList.remove("o-color");
+            } else {
+                boxtext.classList.add("o-color");
+                boxtext.classList.remove("x-color");
+            }
             turn = changeTurn();
+            audioTurn.currentTime = 0;  // rewind sound to start
             audioTurn.play();
             checkwin();
             if (!gameover) {
@@ -63,9 +75,10 @@ reset.addEventListener('click', () => {
 
     turn = "X";
     gameover = false;
-
-    document.querySelector(".line").style.width = "0vw";
-    document.querySelector(".line").style.transform = "none";
     document.querySelector('.info').innerText = turn + "'s turn";
-    document.querySelector('.imgbox img').style.width = "0px";
+
+    // remove highlight from all boxes
+    document.querySelectorAll(".box").forEach(b => {
+        b.classList.remove("winner");
+    });
 });
