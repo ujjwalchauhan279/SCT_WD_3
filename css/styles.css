@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Lilita+One&family=Sixtyfour&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+nav ul {
+    list-style-type: none;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    height: 50px;
+    font-size: 25px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    padding: 0 25px;
+    font-family: "Sixtyfour", sans-serif;
+}
+
+
+.gamecontainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 10vw);
+    grid-template-rows: repeat(3, 10vw);
+    font-family: "Lilita One", sans-serif;
+    position: relative;
+    margin-top: 30px;
+}
+
+.box {
+    border: 2px solid black;
+    font-size: 6vw;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box:hover {
+    background-color: rgb(201, 201, 227);
+}
+
+.gameinfo {
+    padding: 0 34px;
+    font-family: "Exo 2", sans-serif;
+    font-size: x-large;
+}
+
+.imgbox img {
+    width: 0;
+    transition: width 1s ease-in-out;
+}
+
+.br-0 {
+    border-right: 0;
+}
+
+.bl-0 {
+    border-left: 0;
+}
+
+.bt-0 {
+    border-top: 0;
+}
+
+.bb-0 {
+    border-bottom: 0;
+}
+
+#reset {
+    margin: 0 23px;
+    padding: 6px 14px;
+    background-color: rgb(172, 156, 186);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: "Exo 2", sans-serif;
+    font-weight: bolder;
+}
+
+.line{
+    background-color: brown;
+    height: 3px;
+    width: 0vw;
+    position: absolute;
+}
+
+@media screen and (max-width:900px) {
+    .gamecontainer {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 30px;
+    }
+    .gameinfo {
+        margin-top: 30px;
+        text-align: center;
+        font-size: large;
+    }
+    .gameinfo h1{
+        font-size: 1.5rem;
+    }
+    .container{
+        display: grid;
+        grid-template-columns: repeat(3,125px);
+        grid-template-rows: repeat(3,125px);
+    }
+    .box {
+        font-size: 14vw; 
+    }
+    nav ul {
+        font-size: 20px;
+        height: 45px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+
+    .container {
+        grid-template-columns: repeat(3, 26vw);
+        grid-template-rows: repeat(3, 26vw);
+    }
+    .gameinfo {
+        margin-top: 30px;
+        text-align: center;
+        font-size: large;
+    }
+    .box {
+        font-size: 14vw;
+    }
+    nav ul {
+        font-size: 18px;
+        height: 42px;
+    }
+}
