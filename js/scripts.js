@@ -1,15 +1,45 @@
-console.log("Tic Tac Toe")
-let audioTurn = new Audio("assets/tap.mp3")
-let audiogameover = new Audio("assets/gameover.mp3")
-let turn = "X"
-let gameover = false;
+console.log("Tic Tac Toe");
 
-//function to change the turn
+let audioTurn = new Audio("assets/tap.mp3");
+let audiogameover = new Audio("assets/gameover.mp3");
+let turn = "X";
+let gameover = false;
+let mode = "friend"; // default mode
+
+// Change Turn
 const changeTurn = () => {
-    return turn === "X" ? "O" : "X"
+    return turn === "X" ? "O" : "X";
+};
+
+// Computer Move (Random)
+function computerMove() {
+    if (gameover) return;
+
+    let boxtext = document.querySelectorAll(".boxtext");
+    let emptyBoxes = [];
+
+    boxtext.forEach((b, index) => {
+        if (b.innerText === "") emptyBoxes.push(index);
+    });
+
+    if (emptyBoxes.length === 0) return;
+
+    let randomIndex = emptyBoxes[Math.floor(Math.random() * emptyBoxes.length)];
+    boxtext[randomIndex].innerText = "O";
+    boxtext[randomIndex].classList.add("o-color");
+    boxtext[randomIndex].classList.remove("x-color");
+
+    let compSound = audioTurn.cloneNode();
+    compSound.play();
+
+    checkwin();
+    if (!gameover) {
+        turn = "X";
+        document.querySelector('.info').innerText = turn + "'s turn";
+    }
 }
 
-//function to check for win
+// Win Check
 const checkwin = () => {
     let boxtext = document.getElementsByClassName("boxtext");
     let wins = [
@@ -33,52 +63,97 @@ const checkwin = () => {
             gameover = true;
             audiogameover.play();
 
-            // highlight winning boxes
             e.forEach(i => {
                 document.getElementsByClassName("box")[i].classList.add("winner");
             });
         }
     });
-}
+};
 
-//game logic
+// Game Logic
 let boxes = document.getElementsByClassName("box");
 Array.from(boxes).forEach(element => {
     let boxtext = element.querySelector('.boxtext');
+
     element.addEventListener('click', () => {
-        if (gameover) return;
-        if (boxtext.innerText === '') {
-            boxtext.innerText = turn;
-            // Color based on player
-            if (turn === "X") {
-                boxtext.classList.add("x-color");
-                boxtext.classList.remove("o-color");
-            } else {
-                boxtext.classList.add("o-color");
-                boxtext.classList.remove("x-color");
+        if (gameover || boxtext.innerText !== '') return;
+
+        // Always print the current turn symbol
+        boxtext.innerText = turn;
+
+        if (turn === "X") {
+            boxtext.classList.add("x-color");
+            boxtext.classList.remove("o-color");
+        } else {
+            boxtext.classList.add("o-color");
+            boxtext.classList.remove("x-color");
+        }
+
+        audioTurn.currentTime = 0;
+        audioTurn.play();
+
+        checkwin();
+
+        if (!gameover) {
+            if (mode === "friend") {
+                // Normal turn switching
+                turn = changeTurn();
+                document.querySelector('.info').innerText = turn + "'s turn";
             }
-            turn = changeTurn();
-            audioTurn.currentTime = 0;  // rewind sound to start
-            audioTurn.play();
-            checkwin();
-            if (!gameover) {
-                document.getElementsByClassName("info")[0].innerText = turn + "'s turn";
+            else if (mode === "computer") {
+                // Player always X, Computer always O
+                turn = "O";
+                document.querySelector('.info').innerText = "Computer's Turn...";
+                setTimeout(computerMove, 300);
             }
         }
-    })
-})
+    });
+});
 
-//add onclick listener to reset button
+// Reset Game
 reset.addEventListener('click', () => {
     let boxtext = document.querySelectorAll('.boxtext');
-    boxtext.forEach(element => element.innerText = "");
+    boxtext.forEach(element => {
+        element.innerText = "";
+        element.classList.remove("x-color", "o-color");
+    });
 
     turn = "X";
     gameover = false;
     document.querySelector('.info').innerText = turn + "'s turn";
 
-    // remove highlight from all boxes
     document.querySelectorAll(".box").forEach(b => {
         b.classList.remove("winner");
     });
 });
+
+// Mode Buttons
+const friendBtn = document.getElementById("friendMode");
+const computerBtn = document.getElementById("computerMode");
+
+function updateModeUI() {
+    friendBtn.classList.remove("active");
+    computerBtn.classList.remove("active");
+
+    if (mode === "friend") {
+        friendBtn.classList.add("active");
+    } else {
+        computerBtn.classList.add("active");
+    }
+}
+
+friendBtn.addEventListener("click", () => {
+    mode = "friend";
+    reset.click();
+    updateModeUI();
+});
+
+computerBtn.addEventListener("click", () => {
+    mode = "computer";
+    reset.click();
+    updateModeUI();
+});
+
+// set default
+updateModeUI();
+
