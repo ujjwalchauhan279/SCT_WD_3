@@ -35,7 +35,7 @@ function computerMove() {
     checkwin();
     if (!gameover) {
         turn = "X";
-        document.querySelector('.info').innerText = turn + "'s turn";
+        document.querySelector('.info').innerText = turn + "'s Turn";
     }
 }
 
@@ -53,6 +53,7 @@ const checkwin = () => {
         [2, 4, 6],
     ];
 
+    // Win Check
     wins.forEach(e => {
         if (
             boxtext[e[0]].innerText !== "" &&
@@ -61,6 +62,7 @@ const checkwin = () => {
         ) {
             document.querySelector('.info').innerText = boxtext[e[0]].innerText + " Won";
             gameover = true;
+            document.querySelector('.imgbox img').style.width = "150px";
             audiogameover.play();
 
             e.forEach(i => {
@@ -68,7 +70,22 @@ const checkwin = () => {
             });
         }
     });
+
+    //  Tie Condition
+    if (!gameover) {
+        let filledCells = 0;
+        for (let i = 0; i < boxtext.length; i++) {
+            if (boxtext[i].innerText !== "") filledCells++;
+        }
+
+        if (filledCells === 9) {
+            document.querySelector('.info').innerText = "It's a Tie!";
+            audiogameover.play();
+            gameover = true;
+        }
+    }
 };
+
 
 // Game Logic
 let boxes = document.getElementsByClassName("box");
@@ -98,7 +115,7 @@ Array.from(boxes).forEach(element => {
             if (mode === "friend") {
                 // Normal turn switching
                 turn = changeTurn();
-                document.querySelector('.info').innerText = turn + "'s turn";
+                document.querySelector('.info').innerText = turn + "'s Turn";
             }
             else if (mode === "computer") {
                 // Player always X, Computer always O
@@ -120,8 +137,8 @@ reset.addEventListener('click', () => {
 
     turn = "X";
     gameover = false;
-    document.querySelector('.info').innerText = turn + "'s turn";
-
+    document.querySelector('.info').innerText = turn + "'s Turn";
+    document.querySelector('.imgbox').getElementsByTagName('img')[0].style.width = "0px"
     document.querySelectorAll(".box").forEach(b => {
         b.classList.remove("winner");
     });

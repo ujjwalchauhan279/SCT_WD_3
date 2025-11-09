@@ -68,8 +68,8 @@ nav ul {
 }
 
 .imgbox img {
-    width: 200px;
-    transition: width 1s ease-in-out;
+    width: 0px;
+    transition: width 0.6s ease-in-out;
 }
 
 .br-0 {
@@ -131,16 +131,12 @@ nav ul {
 
     .container {
         display: grid;
-        grid-template-columns: repeat(3, 90px);
-        grid-template-rows: repeat(3, 90px);
+        grid-template-columns: repeat(3, 60px);
+        grid-template-rows: repeat(3, 60px);
     }
 
     .box {
-        font-size: 14vw;
-    }
-
-    .imgbox img {
-        width: 80px;
+        font-size: 6vw;
     }
 
     nav ul {
@@ -149,25 +145,21 @@ nav ul {
     }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 550px) {
 
     .container {
-        grid-template-columns: repeat(3, 20vw);
-        grid-template-rows: repeat(3, 20vw);
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(3, 50px);
     }
 
     .gameinfo {
-        margin-top: 30px;
+        margin-top: 8px;
         text-align: center;
         font-size: large;
     }
 
     .box {
-        font-size: 14vw;
-    }
-
-    .imgbox img {
-        width: 90px;
+        font-size: 9vw;
     }
 
     nav ul {
@@ -177,7 +169,7 @@ nav ul {
 }
 
 .body {
-    background-color: rgb(255, 245, 249);
+    background-color: rgb(248, 231, 238);
 }
 
 .winner {
